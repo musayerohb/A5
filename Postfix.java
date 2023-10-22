@@ -1,3 +1,7 @@
+import java.util.ArrayDeque;
+
+import javax.management.RuntimeErrorException;
+
 public class Postfix {
     
     //eatin a burger with no honey mustard
@@ -17,20 +21,64 @@ public class Postfix {
 // Implementation of pop():
 // Make note of head.data for return value
 // Make head point at head.next
+    public ArrayDeque<Object> list; 
 
-    public Postfix(SLL stack) {
+    public Postfix(ArrayDeque<Object> list) {
+        this.list = list;
+        
     }
 
-    public void addFirst(T v) {
-        if (isEmpty() == true) {
-            NodeSL<T> newItem = new NodeSL<>(v, null);
-            this.head = this.tail = newItem;
+    public double postFixArithmetic() {
+       Object[] Arraylist = list.toArray();
+       ArrayDeque<Object> stack = new ArrayDeque<>();
+       
+    //    if(stack.size() == 0) {
+    //     throw new RuntimeErrorException(null, "No expression inputted.");     
+    //    }
+
+       for (int item = 0; item < Arraylist.length; item++) {
+            if (Arraylist[item] instanceof Double) {
+                double d = (Double)Arraylist[item];
+                stack.push(d);
+                System.out.println("Currently on the stack: " + stack.toString());
+            }
+            else if (Arraylist[item] instanceof Character) {
+                Character operator = (Character)Arraylist[item];
+
+                Object secondNumber = stack.pop();
+                Object firstNumber = stack.pop();                
+                double secondNumberDouble = (Double)secondNumber;
+                double firstNumberDouble = (Double)firstNumber;
+                if (Arraylist[item].equals('+')) {
+                    double result = firstNumberDouble + secondNumberDouble;
+                    stack.push(result);
+                } 
+                else if (Arraylist[item].equals('-')) {
+                    double result = firstNumberDouble - secondNumberDouble;
+                    stack.push(result);
+                }
+                else if (Arraylist[item].equals('*')) {
+                    double result = firstNumberDouble * secondNumberDouble;
+                    stack.push(result);
+                }
+                else if (Arraylist[item].equals('/')) {
+                    double result = firstNumberDouble / secondNumberDouble;
+                    stack.push(result);
+                }
+
+                System.out.println("Currently on the stack: " + stack.toString());
+                //push last two numbers off the stack
+                //use operation on them (last of the two numbers goes first) and do the math on it
+            }
         }
-        else {
-            NodeSL<T> newItem = new NodeSL<>(v, this.head);
-            this.head = newItem;
-        }
-        return;
+            if (stack.size() != 1) {
+                throw new RuntimeErrorException(null, "Stack operation error: too many operations for too few numbers.");
+            }
+        double result = (Double)stack.pop();
+        return result;
+        //only if the size of the stack is 1 should you push the only value on there and return it.
+        
     }
+    
 
 }
